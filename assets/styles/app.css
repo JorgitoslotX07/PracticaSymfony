@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*body {*/
+/*    background-color: lightgray;*/
+/*}*/
+/* Una clase de prueba para verificar */
+.bg-test-red { background-color: red !important; }

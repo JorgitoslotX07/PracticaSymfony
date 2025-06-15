@@ -1,0 +1,54 @@
+{% extends 'base_panel_proveedor.html.twig' %}
+
+{% block title %}Crear Proveedor{% endblock %}
+{% block header %}Crear Proveedor{% endblock %}
+
+{% block panel_content %}
+    <div class="max-w-xl mx-auto bg-gray-50 border border-gray-200 rounded-lg p-6 shadow-sm">
+        <h1 class="text-2xl font-semibold mb-6">Crear nuevo Proveedor</h1>
+
+
+        <form action="{{ path('proveedor_create') }}" method="POST" class="space-y-4">
+            <div>
+                <label for="nombre" class="block text-gray-700 font-medium mb-1">Nombre <span class="text-red-500">*</span></label>
+                <input type="text" name="nombre" id="nombre" required
+                       class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-300" />
+            </div>
+
+            <div>
+                <label for="email" class="block text-gray-700 font-medium mb-1">Email <span class="text-red-500">*</span></label>
+                <input type="email" name="email" id="email" required
+                       class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-300" />
+            </div>
+
+            <div>
+                <label for="telefono" class="block text-gray-700 font-medium mb-1">Teléfono</label>
+                <input type="text" name="telefono" id="telefono"
+                       class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-300" />
+            </div>
+
+            <div>
+                <label for="tipo" class="block text-gray-700 font-medium mb-1">Tipo de Proveedor <span class="text-red-500">*</span></label>
+                <select name="tipo" id="tipo" required
+                        class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-300">
+                    <option value="" disabled selected>Selecciona un tipo</option>
+                    {% for tipo in tipos %}
+                        <option value="{{ tipo }}">{{ tipo|capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="flex items-center">
+                <input type="checkbox" name="activo" id="activo" value="1" checked class="mr-2">
+                <label for="activo" class="text-gray-700 font-medium">Activo</label>
+            </div>
+
+            <div class="pt-4">
+                <button type="submit"
+                        class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                    Crear Proveedor
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

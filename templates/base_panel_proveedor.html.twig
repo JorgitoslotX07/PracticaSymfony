@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="min-h-screen flex flex-col lg:flex-row">
+
+        <div class="lg:hidden bg-gray-900 text-gray-100 p-4 flex justify-between items-center">
+            <span class="text-lg font-bold">Admin Panel</span>
+            <button id="mobileMenuButton" class="focus:outline-none">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+
+        {% block sidebar %}
+            <aside id="sidebar"
+                   class="w-64 bg-gray-900 text-gray-100 flex flex-col  h-screen justify-between transform lg:transform-none lg:translate-x-0 transition-transform duration-200 ease-in-out -translate-x-full lg:relative fixed z-40">
+
+                <div class="lg:hidden flex justify-end p-4 border-b border-gray-700">
+                    <button id="mobileCloseButton" class="text-gray-300 hover:text-white">
+                        ✕
+                    </button>
+                </div>
+
+                <div class="p-6 flex items-center border-b border-gray-700">
+                    <span class="text-lg font-bold">Admin Panel</span>
+                </div>
+
+                <nav class="flex-1 overflow-y-auto my-4">
+                    <ul class="space-y-1">
+                        <li>
+                            <a href="{{ path('proveedor_list') }}"
+                               class="flex items-center px-6 py-3 hover:bg-gray-800 rounded-r-lg transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none"
+                                     viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M3 12h18M3 6h18M3 18h18"/>
+                                </svg>
+                                <span>Proveedores</span>
+                            </a>
+                        </li>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li>
+                                <a href="{{ path('admin_users_list') }}"
+                                   class="flex items-center px-6 py-3 hover:bg-gray-800 rounded-r-lg transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A8.966 8.966 0 0112 15a8.966 8.966 0 016.879 2.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
+                                    </svg>
+                                    <span>Usuarios</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+
+                <div class="p-6 border-t border-gray-700 flex items-center justify-between mt-auto relative"
+                     id="userMenuContainer">
+                    <div class="flex items-center cursor-pointer" id="userMenuButton">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-8 w-8 text-gray-300 mr-3 rounded-full bg-gray-700 p-1" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M5.121 17.804A9.937 9.937 0 0112 15c2.142 0 4.118.66 5.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+
+                        <div>
+                            <div class="text-gray-100 text-sm">
+                                {{ app.user ? app.user.email|split('@')[0]|capitalize : 'Invitado' }}
+                            </div>
+                            <div class="text-gray-400 text-xs">
+                                {{ app.user.email ?? 'Sin sesión' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if app.user %}
+                        <div id="userDropdown"
+                             class="absolute right-0 bottom-full hidden bg-red-500 shadow-lg z-50 w-full"
+                        >
+                            <form method="post" action="{{ path('logout') }}">
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                                <button
+                                        type="submit"
+                                        class="w-full text-left px-4 py-2 text-gray-200 text-sm hover:bg-red-700"
+                                >
+                                    Cerrar sesión
+                                </button>
+                            </form>
+                        </div>
+
+                    {% endif %}
+                </div>
+            </aside>
+        {% endblock %}
+
+        <div class="flex-1 p-4 lg:p-8 bg-gray-100">
+            <header class="mb-6">
+                <h1 class="text-2xl lg:text-3xl font-semibold text-gray-800">{% block header %}Dashboard{% endblock %}</h1>
+            </header>
+            <section class="border border-gray-200 rounded-lg p-4 md:p-6 shadow-sm bg-white">
+                {% block panel_content %}{% endblock %}
+            </section>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/sidevar.js') }}"></script>
+
+{% endblock %}

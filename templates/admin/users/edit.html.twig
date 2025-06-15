@@ -1,0 +1,67 @@
+{% extends 'base_panel_proveedor.html.twig' %}
+
+{% block title %}Editar Usuario{% endblock %}
+{% block header %}Editar Usuario{% endblock %}
+
+{% block panel_content %}
+    <div class="max-w-md mx-auto bg-white border border-gray-200 rounded-lg shadow-lg p-8 mt-10">
+
+        <h2 class="text-3xl font-semibold text-gray-800 mb-8 text-center">Editar Usuario</h2>
+
+        <form method="post" action="{{ path('admin_users_edit', {id: user.id}) }}" class="space-y-6">
+
+            <div>
+                <label for="email" class="block text-gray-700 font-semibold mb-2">
+                    Correo electrónico <span class="text-red-500">*</span>
+                </label>
+                <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value="{{ user.email }}"
+                        required
+                        placeholder="ejemplo@correo.com"
+                        class="w-full px-4 py-3 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 transition duration-200 outline-none"
+                />
+            </div>
+
+            <fieldset class="border border-gray-300 rounded-md p-4">
+                <legend class="text-gray-700 font-semibold px-2">Roles <span class="text-red-500">*</span></legend>
+
+                <div class="flex space-x-6 mt-2">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input
+                                type="checkbox"
+                                name="roles[]"
+                                value="ROLE_ADMIN"
+                                {% if 'ROLE_ADMIN' in user.roles %}checked{% endif %}
+                                class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
+                        />
+                        <span class="ml-2 text-gray-700 select-none">Administrador</span>
+                    </label>
+                </div>
+            </fieldset>
+
+            <div>
+                <label for="plainPassword" class="block text-gray-700 font-semibold mb-2">
+                    Nueva contraseña (dejar vacío para no cambiar)
+                </label>
+                <input
+                        id="plainPassword"
+                        name="plainPassword"
+                        type="password"
+                        placeholder="••••••••"
+                        class="w-full px-4 py-3 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 transition duration-200 outline-none"
+                />
+            </div>
+
+            <button
+                    type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-md shadow-md transition duration-300"
+            >
+                Actualizar Usuario
+            </button>
+
+        </form>
+    </div>
+{% endblock %}

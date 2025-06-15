@@ -1,0 +1,44 @@
+{% extends 'base_panel_proveedor.html.twig' %}
+
+{% block title %}Crear Usuario{% endblock %}
+{% block header %}Crear Usuario{% endblock %}
+
+{% block panel_content %}
+    <div class="max-w-xl mx-auto bg-gray-50 border border-gray-200 rounded-lg p-6 shadow-sm">
+        <h1 class="text-2xl font-semibold mb-6">Crear Usuario</h1>
+
+        <form method="post" action="{{ path('admin_users_create') }}" class="space-y-6">
+            <div>
+                <label for="email" class="block text-gray-700 font-medium mb-1">Email <span class="text-red-500">*</span></label>
+                <input id="email" name="email" type="email" value="{{ user.email|default('') }}" required
+                       class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-300"/>
+            </div>
+
+            <fieldset>
+                <legend class="text-gray-700 font-medium mb-2">Roles</legend>
+                <div class="space-x-6">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="roles[]" value="ROLE_ADMIN"
+                               {% if user.roles is defined and 'ROLE_ADMIN' in user.roles %}checked{% endif %}
+                               class="form-checkbox"/>
+                        <span class="ml-2">Admin</span>
+                    </label>
+                </div>
+            </fieldset>
+
+            <div>
+                <label for="plainPassword" class="block text-gray-700 font-medium mb-1">Contraseña <span class="text-red-500">*</span></label>
+                <input id="plainPassword" name="plainPassword" type="password" required
+                       class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-300"/>
+            </div>
+
+            <div>
+                <button type="submit"
+                        class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                    Guardar usuario
+                </button>
+            </div>
+        </form>
+
+    </div>
+{% endblock %}
