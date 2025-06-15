@@ -2,9 +2,7 @@
 
 namespace App\Controller;
 
-use App\Doctrine\DBAL\Types\TipoProveedorType;
-use App\Entity\Proveedor;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\ProveedorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,60 +10,44 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class ProveedorController extends AbstractController
 {
+    private ProveedorService $proveedorService;
 
-    public function list(EntityManagerInterface $em): Response
+    public function __construct(ProveedorService $proveedorService) {
+        $this->proveedorService = $proveedorService;
+    }
+
+    public function list(): Response
     {
-        $proveedores = $em->getRepository(Proveedor::class)->findAll();
-        $tipos = TipoProveedorType::getValues();
         return $this->render('proveedor/list.html.twig', [
-            'proveedores' => $proveedores,
-            'tipos'       => $tipos,
+            'proveedores' => $this->proveedorService->getAllProveedores(),
+            'tipos'       => $this->proveedorService->getTipos(),
         ]);
     }
 
     public function new(): Response
     {
-        $tipos = TipoProveedorType::getValues();
-
         return $this->render('admin/proveedor/new.html.twig', [
-            'tipos' => $tipos,
+            'tipos' => $this->proveedorService->getTipos(),
         ]);
     }
 
-    public function create(Request $request, EntityManagerInterface $em): RedirectResponse
+    public function create(Request $request): RedirectResponse
     {
-        $nombre   = $request->request->get('nombre');
-        $email    = $request->request->get('email');
-        $telefono = $request->request->get('telefono');
-        $tipo     = $request->request->get('tipo');
-        $activo   = $request->request->get('activo');
+        $data = $request->request->all();
+        $proveedor = $this->proveedorService->createProveedor($data);
 
-        if (!$nombre || !$email || !$tipo) {
+        if (!$proveedor) {
             $this->addFlash('error', 'Los campos nombre, email y tipo son obligatorios.');
-            return $this->redirectToRoute('proveedor_new'); // ← ruta actualizada
+            return $this->redirectToRoute('proveedor_new');
         }
 
-        $now = new \DateTime();
-        $p = new Proveedor();
-        $p->setNombre($nombre)
-            ->setEmail($email)
-            ->setTelefono($telefono ?: null)
-            ->setTipo($tipo)
-            ->setActivo($activo === '1')
-            ->setCreatedAt($now)
-            ->setUpdatedAt($now);
-
-        $em->persist($p);
-        $em->flush();
-
         $this->addFlash('success', 'Proveedor creado exitosamente.');
-
-        return $this->redirectToRoute('proveedor_list');  // ← ruta correcta
+        return $this->redirectToRoute('proveedor_list');
     }
 
-    public function show(int $id, EntityManagerInterface $em): Response
+    public function show(int $id): Response
     {
-        $p = $em->getRepository(Proveedor::class)->find($id);
+        $p = $this->proveedorService->getProveedorById($id);
         if (!$p) {
             throw $this->createNotFoundException('Proveedor no encontrado.');
         }
@@ -75,9 +57,9 @@ class ProveedorController extends AbstractController
         ]);
     }
 
-    public function edit(int $id, EntityManagerInterface $em): Response
+    public function edit(int $id): Response
     {
-        $p = $em->getRepository(Proveedor::class)->find($id);
+        $p = $this->proveedorService->getProveedorById($id);
         if (!$p) {
             throw $this->createNotFoundException('Proveedor no encontrado.');
         }
@@ -87,58 +69,39 @@ class ProveedorController extends AbstractController
         ]);
     }
 
-    public function update(int $id, Request $request, EntityManagerInterface $em): RedirectResponse
+    public function update(int $id, Request $request): RedirectResponse
     {
-        $p = $em->getRepository(Proveedor::class)->find($id);
+        $p = $this->proveedorService->getProveedorById($id);
         if (!$p) {
             throw $this->createNotFoundException('Proveedor no encontrado.');
         }
 
-        $nombre   = $request->request->get('nombre');
-        $email    = $request->request->get('email');
-        $telefono = $request->request->get('telefono');
-        $tipo     = $request->request->get('tipo');
-        $activo   = $request->request->get('activo');
-
-        if (!$nombre || !$email || !$tipo) {
+        $data = $request->request->all();
+        if (empty($data['nombre']) || empty($data['email']) || empty($data['tipo'])) {
             $this->addFlash('error', 'Los campos nombre, email y tipo son obligatorios.');
             return $this->redirectToRoute('proveedor_edit', ['id' => $id]);
         }
 
-        $p->setNombre($nombre)
-            ->setEmail($email)
-            ->setTelefono($telefono ?: null)
-            ->setTipo($tipo)
-            ->setActivo($activo === '1')
-            ->setUpdatedAt(new \DateTime());
-
-        $em->flush();
-
+        $this->proveedorService->updateProveedor($p, $data);
         $this->addFlash('success', 'Proveedor actualizado.');
-
-        $returnTo = $request->request->get('_return_to');
-        if ($returnTo) {
-            return $this->redirect($returnTo);
-        }
 
         return $this->redirectToRoute('proveedor_show', ['id' => $id]);
     }
 
-    public function delete(int $id, Request $request, EntityManagerInterface $em): RedirectResponse
+    public function delete(int $id, Request $request): RedirectResponse
     {
-        $p = $em->getRepository(Proveedor::class)->find($id);
+        $p = $this->proveedorService->getProveedorById($id);
         if (!$p) {
             throw $this->createNotFoundException('Proveedor no encontrado.');
         }
 
         if ($this->isCsrfTokenValid('delete' . $id, $request->request->get('_token'))) {
-            $em->remove($p);
-            $em->flush();
+            $this->proveedorService->deleteProveedor($p);
             $this->addFlash('success', 'Proveedor eliminado.');
         } else {
             $this->addFlash('error', 'Token CSRF inválido.');
         }
 
-        return $this->redirectToRoute('proveedor_list'); // ← ruta actualizada
+        return $this->redirectToRoute('proveedor_list');
     }
 }
