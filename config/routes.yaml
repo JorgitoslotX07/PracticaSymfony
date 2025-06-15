@@ -1,0 +1,81 @@
+proveedor_list:
+  path: /proveedor
+  controller: App\Controller\ProveedorController::list
+
+proveedor_new:
+  path: /admin/proveedor/new
+  controller: App\Controller\ProveedorController::new
+
+proveedor_create:
+  path: /admin/proveedor/create
+  controller: App\Controller\ProveedorController::create
+  methods: [ POST ]
+
+proveedor_show:
+  path: /admin/proveedor/{id}
+  controller: App\Controller\ProveedorController::show
+  requirements:
+    id: '\d+'
+
+proveedor_edit:
+  path: /admin/proveedor/{id}/edit
+  controller: App\Controller\ProveedorController::edit
+  requirements:
+    id: '\d+'
+
+proveedor_update:
+  path: /admin/proveedor/{id}/update
+  controller: App\Controller\ProveedorController::update
+  methods: [ POST ]
+  requirements:
+    id: '\d+'
+
+proveedor_delete:
+  path: /admin/proveedor/{id}/delete
+  controller: App\Controller\ProveedorController::delete
+  methods: [ POST ]
+  requirements:
+    id: '\d+'
+
+
+login:
+  path: /auth/login
+  controller: App\Controller\SecurityController::login
+
+logout:
+  path: /auth/logout
+  controller: App\Controller\SecurityController::logout
+
+
+admin_users_list:
+  path: /admin/users
+  controller: App\Controller\UserController::list
+
+admin_users_new:
+  path: /admin/users/new
+  controller: App\Controller\UserController::new
+
+admin_users_create:
+  path: /admin/users/create
+  controller: App\Controller\UserController::create
+  methods: [ POST ]
+
+admin_users_edit:
+  path: /admin/users/{id}/edit
+  controller: App\Controller\UserController::edit
+  requirements:
+    id: '\d+'
+
+admin_users_update:
+  path: /admin/users/{id}/update
+  controller: App\Controller\UserController::update
+  methods: [ POST ]
+  requirements:
+    id: '\d+'
+
+admin_users_delete:
+  path: /admin/users/{id}/delete
+  controller: App\Controller\UserController::delete
+  methods: [ POST ]
+  requirements:
+    id: '\d+'
