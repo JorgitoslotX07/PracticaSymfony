@@ -1,3 +1,9 @@
+home_redirect:
+  path: /
+  controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+  defaults:
+    route: proveedor_list
+
 proveedor_list:
   path: /proveedor
   controller: App\Controller\ProveedorController::list
